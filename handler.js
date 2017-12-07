@@ -15,7 +15,7 @@ module.exports = function(options) {
     try {
       FsExtra.mkdirsSync(options.store);
       const keys = Object.keys(request.payload);
-      const fileObj = request.payload[keys[0]];
+      const fileObj = request.payload.file;
       const destPath = Path.resolve(Path.join(options.store, fileObj.hapi.filename));
       const fileStream = Fs.createWriteStream(destPath);
 
@@ -35,7 +35,7 @@ module.exports = function(options) {
         console.log(`Saved file: "${destPath}"`);
         return reply(info);
       });
-      
+
       fileObj.pipe(fileStream);
     } catch (err) {
       console.log(err);
@@ -53,7 +53,7 @@ function processImage(file, config) {
     if ([ 'image/jpeg', 'image/png' ].indexOf(file.mime) === -1) {
       return resolve({});
     }
-    
+
     if (config.resize) {
       await resize(file, config);
     }
